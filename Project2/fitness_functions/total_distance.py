@@ -2,7 +2,7 @@ import numpy as np
 from typing import List
 
 
-def total_distance(dist_matrix: np.ndarray, route: List[int]) -> float:
+def total_distance(route: List[int], dist_matrix: np.ndarray) -> float:
     total_dist = 0
     previous_city = route[0]
     for city in route[1:]:

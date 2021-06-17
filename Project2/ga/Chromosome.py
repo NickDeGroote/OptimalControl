@@ -1,3 +1,4 @@
+import random
 from typing import Callable, List
 
 """
@@ -20,15 +21,19 @@ class Chromosome:
         :return: None
         """
         # Swaps the value of a random gene in this Chromosome
-        self.genes[index] = (0, 1)[self.genes[index] == 0]
+        swapping_genes = random.sample(range(0, len(self.genes)), 2)
+        self.genes[swapping_genes[0]], self.genes[swapping_genes[1]] = (
+            self.genes[swapping_genes[1]],
+            self.genes[swapping_genes[0]],
+        )
 
-    def calculate_fitness(self, fitness_function: Callable) -> float:
+    def calculate_fitness(self, fitness_function: Callable, data=None) -> float:
         """
         Calculates the fitness of this Chromosome
         :param fitness_function: Function evaluating fitness
         :return: Fitness of Chromosome
         """
-        self.fitness = fitness_function(self.genes)
+        self.fitness = fitness_function(self.genes, data)
         return self.fitness
 
     def __repr__(self):

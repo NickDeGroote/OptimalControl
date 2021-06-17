@@ -21,9 +21,9 @@ class GeneticAlgorithm:
         num_genes: int,
         population_size: int = 50,
         generations: int = 100,
-        crossover_probability: float = 0.8,
-        mutation_probability: float = 0.01,
-        elitism_ratio: float = 0.02,
+        crossover_probability: float = 0.9,
+        mutation_probability: float = 0.05,
+        elitism_ratio: float = 0.1,
         verbose: bool = True,
     ):
         self.input_data = input_data
@@ -44,6 +44,7 @@ class GeneticAlgorithm:
         """
 
         self.population = Population(
+            data=self.input_data,
             fitness_function=self.fitness_function,
             num_genes=self.num_genes,
             population_size=self.population_size,
