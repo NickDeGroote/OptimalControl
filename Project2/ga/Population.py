@@ -100,8 +100,8 @@ class Population:
             child_p1.append(parent_1.genes[i])
 
         child_p2 = [item for item in parent_2.genes if item not in child_p1]
-        child = child_p1 + child_p2
-        return Chromosome(genes=child), Chromosome(genes=child)
+        child = child_p2[:start_gene] + child_p1 + child_p2[start_gene:]
+        return Chromosome(genes=child), Chromosome(genes=list(reversed(child)))
 
     def roulette_selection(self) -> Chromosome:
         """
@@ -178,9 +178,8 @@ class Population:
         :return: None
         """
         # Mutates Chromosome if random number is less than mutation probability
-        for i in range(len(chromosome.genes)):
-            if random.random() < self.mutation_probability:
-                chromosome.mutate(i)
+        if random.random() < self.mutation_probability:
+            chromosome.mutate()
 
     def calc_chromosome_fitnesses(self) -> None:
         """
@@ -227,7 +226,7 @@ class Population:
         :return: None
         """
         next_generation = []
-
+        #self.order_chromosomes()
         # Move the N fittest chromosomes to the next generation based on elitism
         if self.elitism_ratio:
             # Round number of elites to nearest integer
@@ -250,6 +249,10 @@ class Population:
 
         self.has_ranked_chromosomes = False
         self.chromosomes = next_generation
+
+    def order_chromosomes(self) -> None:
+        for chromosome in self.chromosomes:
+            chromosome.reorder_genes()
 
     def update_to_next_generation(self) -> None:
         """

@@ -15,7 +15,7 @@ class Chromosome:
         self.genes = genes
         self.fitness = 0
 
-    def mutate(self, index) -> None:
+    def mutate(self) -> None:
         """
         Mutates this Chromosome
         :return: None
@@ -35,6 +35,12 @@ class Chromosome:
         """
         self.fitness = fitness_function(self.genes, data)
         return self.fitness
+
+    def reorder_genes(self) -> None:
+        zero_index = self.genes.index(0)
+        part_1 = self.genes[:zero_index]
+        part_2 = self.genes[zero_index:]
+        self.genes = part_2 + part_1
 
     def __repr__(self):
         """

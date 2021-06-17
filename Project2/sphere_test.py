@@ -25,11 +25,11 @@ ga = GeneticAlgorithm(
     input_data=distance_matrix,
     fitness_function=total_distance,
     num_genes=50,
-    population_size=100,
-    generations=1000,
-    crossover_probability=0.0,
-    mutation_probability=0.5,
-    elitism_ratio=0.01,
+    population_size=150,
+    generations=3000,
+    crossover_probability=0.6,
+    mutation_probability=0.03,
+    elitism_ratio=0.02,
 )
 
 # Run the MP GA
@@ -43,6 +43,7 @@ print("Run Time: %s seconds" % (time.time() - start_time))
 # Print the best Chromosomes from each Population
 print("Population best Chromosome - (Fitness, [Genes]):")
 print(best_chromosome)
+print("Distance: {}".format(1 / best_chromosome.fitness))
 
 ga.generate_plots()
 
