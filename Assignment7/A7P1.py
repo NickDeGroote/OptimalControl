@@ -1,4 +1,4 @@
-from sympy import symbols, solve, Symbol, diff, dsolve, sqrt
+from sympy import symbols, solve, Symbol, diff, dsolve, sqrt, vvprint
 from sympy.physics.vector import dynamicsymbols
 
 # Define Constants
@@ -35,6 +35,16 @@ lamb = c
 Hf = -diff(G, tf)
 lamb_f = diff(G, xf)
 
+# Weierstraus Condition
+zdot = symbols("zdot")
+weierstraus = L.subs(qdot, zdot) - L - (zdot - qdot) * diff(L, qdot)
+
+print("\nWeierstraus Condition:")
+print(vpprint(factor(weierstraus)))
+
+print("Latex Representation:")
+print(vlatex(weierstraus))
+print(vlatex(factor(weierstraus)))
 
 print(Hf)
 
