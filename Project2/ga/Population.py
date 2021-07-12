@@ -21,7 +21,6 @@ class Population:
         self,
         data,
         fitness_function: Callable,
-        num_genes: int,
         population_size: int = 50,
         crossover_probability: float = 0.8,
         mutation_probability: float = 0.01,
@@ -31,7 +30,6 @@ class Population:
     ):
         self.data = data
         self.fitness_function = fitness_function
-        self.num_genes = num_genes
         self.size = population_size
         self.crossover_probability = crossover_probability
         self.mutation_probability = mutation_probability
@@ -55,7 +53,7 @@ class Population:
         """
         for i in range(self.size):
             genes = random.sample(range(data.shape[0]), data.shape[0])
-            #genes = list(range(0,50))
+            # genes = list(range(0,50))
             chromosome = Chromosome(genes=genes)
             self.chromosomes.append(chromosome)
 
@@ -226,7 +224,7 @@ class Population:
         :return: None
         """
         next_generation = []
-        #self.order_chromosomes()
+        # self.order_chromosomes()
         # Move the N fittest chromosomes to the next generation based on elitism
         if self.elitism_ratio:
             # Round number of elites to nearest integer

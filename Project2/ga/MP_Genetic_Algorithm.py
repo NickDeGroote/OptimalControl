@@ -18,7 +18,6 @@ class GeneticAlgorithm:
         self,
         input_data: float,
         fitness_function: Callable,
-        num_genes: int,
         population_size: int = 50,
         generations: int = 100,
         crossover_probability: float = 0.9,
@@ -28,7 +27,6 @@ class GeneticAlgorithm:
     ):
         self.input_data = input_data
         self.fitness_function = fitness_function
-        self.num_genes = num_genes
         self.population_size = population_size
         self.num_generations = generations
         self.crossover_probability = crossover_probability
@@ -46,7 +44,6 @@ class GeneticAlgorithm:
         self.population = Population(
             data=self.input_data,
             fitness_function=self.fitness_function,
-            num_genes=self.num_genes,
             population_size=self.population_size,
             crossover_probability=self.crossover_probability,
             mutation_probability=self.mutation_probability,

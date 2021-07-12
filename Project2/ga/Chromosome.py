@@ -20,12 +20,26 @@ class Chromosome:
         Mutates this Chromosome
         :return: None
         """
-        # Swaps the value of a random gene in this Chromosome
-        swapping_genes = random.sample(range(0, len(self.genes)), 2)
-        self.genes[swapping_genes[0]], self.genes[swapping_genes[1]] = (
-            self.genes[swapping_genes[1]],
-            self.genes[swapping_genes[0]],
-        )
+        mutation_type = random.randint(0, 2)
+        if mutation_type == 0:
+            # Swaps the value of a random gene in this Chromosome
+            swapping_genes = random.sample(range(0, len(self.genes)), 2)
+            self.genes[swapping_genes[0]], self.genes[swapping_genes[1]] = (
+                self.genes[swapping_genes[1]],
+                self.genes[swapping_genes[0]],
+            )
+        elif mutation_type == 1:
+            swapping_genes = random.sample(range(0, len(self.genes)), 2)
+            swapping_genes.sort()
+            self.genes[swapping_genes[0]: swapping_genes[1]] = reversed(
+                self.genes[swapping_genes[0]: swapping_genes[1]]
+            )
+        else:
+            swapping_genes = random.sample(range(0, len(self.genes)), 2)
+            swapping_genes.sort()
+            temp_genes = self.genes[(swapping_genes[0] + 1): swapping_genes[1]]
+            temp_genes.append(self.genes[swapping_genes[0]])
+            self.genes[swapping_genes[0]: swapping_genes[1]] = temp_genes
 
     def calculate_fitness(self, fitness_function: Callable, data=None) -> float:
         """
