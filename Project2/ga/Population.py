@@ -19,17 +19,17 @@ class Population:
 
     def __init__(
         self,
+        data,
         fitness_function: Callable,
-        num_genes: int,
         population_size: int = 50,
         crossover_probability: float = 0.8,
         mutation_probability: float = 0.01,
         elitism_ratio: float = 0.02,
-        selection_type: str = "roulette",
+        selection_type: str = "tournament",
         crossover_type: str = "ordered",
     ):
+        self.data = data
         self.fitness_function = fitness_function
-        self.num_genes = num_genes
         self.size = population_size
         self.crossover_probability = crossover_probability
         self.mutation_probability = mutation_probability
@@ -44,7 +44,7 @@ class Population:
         self.population_size_log = []
         self.parallel = False
 
-    def create_chromosomes(self, seed: int) -> None:
+    def create_chromosomes(self, data) -> None:
         """
         Creates a chromosome from the data in seed.
         :param seed: Data needed to create the chromosome
@@ -52,12 +52,8 @@ class Population:
         :return: Chromosome object for that individual
         """
         for i in range(self.size):
-            genes = [0] * self.num_genes
-            one_weight = int(round(100 * (seed / 100)))
-            zero_weight = 100 - one_weight
-            weighted_list = [0] * zero_weight + [1] * one_weight
-            for j in range(0, self.num_genes):
-                genes[j] = random.choice(weighted_list)
+            genes = random.sample(range(data.shape[0]), data.shape[0])
+            # genes = list(range(0,50))
             chromosome = Chromosome(genes=genes)
             self.chromosomes.append(chromosome)
 
@@ -102,8 +98,8 @@ class Population:
             child_p1.append(parent_1.genes[i])
 
         child_p2 = [item for item in parent_2.genes if item not in child_p1]
-        child = child_p1 + child_p2
-        return child
+        child = child_p2[:start_gene] + child_p1 + child_p2[start_gene:]
+        return Chromosome(genes=child), Chromosome(genes=list(reversed(child)))
 
     def roulette_selection(self) -> Chromosome:
         """
@@ -180,9 +176,8 @@ class Population:
         :return: None
         """
         # Mutates Chromosome if random number is less than mutation probability
-        for i in range(len(chromosome.genes)):
-            if random.random() < self.mutation_probability:
-                chromosome.mutate(i)
+        if random.random() < self.mutation_probability:
+            chromosome.mutate()
 
     def calc_chromosome_fitnesses(self) -> None:
         """
@@ -192,14 +187,14 @@ class Population:
         if self.parallel:
             num_cpu_cores = multiprocessing.cpu_count()
             fitnesses = Parallel(n_jobs=num_cpu_cores)(
-                delayed(chromosome.calculate_fitness)(self.fitness_function)
+                delayed(chromosome.calculate_fitness)(self.fitness_function, self.data)
                 for chromosome in self.chromosomes
             )
             for chromosome, fitness in zip(self.chromosomes, fitnesses):
                 chromosome.fitness = fitness
         else:
             for chromosome in self.chromosomes:
-                chromosome.calculate_fitness(self.fitness_function)
+                chromosome.calculate_fitness(self.fitness_function, self.data)
 
     def rank_chromosomes(self) -> None:
         """
@@ -229,7 +224,7 @@ class Population:
         :return: None
         """
         next_generation = []
-
+        # self.order_chromosomes()
         # Move the N fittest chromosomes to the next generation based on elitism
         if self.elitism_ratio:
             # Round number of elites to nearest integer
@@ -252,6 +247,10 @@ class Population:
 
         self.has_ranked_chromosomes = False
         self.chromosomes = next_generation
+
+    def order_chromosomes(self) -> None:
+        for chromosome in self.chromosomes:
+            chromosome.reorder_genes()
 
     def update_to_next_generation(self) -> None:
         """
